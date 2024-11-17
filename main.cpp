@@ -30,28 +30,42 @@ int main(){
     }
     cout << endl;
 
-    for (int i = 0; i < 1000; i++)
-        cout << probability3(PROB_ENTER, PROB_LEAVE, PROB_SHIFT) << " ";
-
     // Simulate
-/*     for (int i = 0; i < ITER; i++){
+    for (int i = 0; i < ITER; i++){
         cout << "Time: " << i << endl;
         for (int l = 0; l < LANES; l++){
             cout << "Lane " << l+1 << " - ";
             auto booth = plaza[l];
-            if (probability(PROB_ENTER)){
-                auto car = Car();
+
+            int c = probability3(PROB_ENTER, PROB_LEAVE, PROB_SHIFT);
+            Car car;
+            switch (c)
+            {
+            case 0: // Enter lane
+                car = Car();
                 booth.push_back(car);
                 cout << "Joined: "; car.print();
-            }
-            else if (booth.size() > 0){
-                auto car = booth.front();
+                break;
+            case 1: // Pay and leave lane
+                car = booth.front();
                 booth.pop_front();
                 cout << "Payed: "; car.print();
+                break;
+            case 2: // Switch lanes
+                car = booth.back();
+                booth.pop_back();
+                int newLane = rand() % LANES;
+                plaza[newLane].push_back(car);
+                cout << "Switched to lane " << newLane+1 << ": "; car.print();
+                break;
             }
         }
+        for (int l = 0; l < LANES; l++){
+            cout << "Lane " << l+1 << " Queue:\n";
+            print_cars(plaza[l]);
+        }
         cout << endl;
-    } */
+    }
 
     return 0;
 }
