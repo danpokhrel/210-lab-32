@@ -6,63 +6,73 @@
 #include <array>
 using namespace std;
 
-const int PROB_ENTER = 45;
+const int PROB_ENTER = 39, PROB_LEAVE = 46, PROB_SHIFT = 15;
 const int START_CARS = 2;
 const int LANES = 4, ITER = 20;
 
 // Prototypes
-bool probability(int percent);
-void print_cars(array<deque<Car>, LANES> &plaza);
+int probability3(int perX, int perY, int perZ);
+void print_cars(deque<Car> &booth);
 
 int main(){
     srand(time(0));
-    array<deque<Car>, LANES> plaza;
+    deque<Car> plaza[LANES];
 
     // Initialize tool booths
     for (int l = 0; l < LANES; l++)
     for (int i = 0; i < START_CARS; i++)
-        plaza[i].push_back(Car());
+        plaza[l].push_back(Car());
+
     cout << "Initial Queue:\n";
-    print_cars(plaza);
+    for (int l = 0; l < LANES; l++){
+        cout << "Lane " << l+1 << ":\n";
+        print_cars(plaza[l]);
+    }
     cout << endl;
 
+    for (int i = 0; i < 1000; i++)
+        cout << probability3(PROB_ENTER, PROB_LEAVE, PROB_SHIFT) << " ";
+
     // Simulate
-    int i = 0;
-    while (booth.size() > 0){
-        i++;
+/*     for (int i = 0; i < ITER; i++){
         cout << "Time: " << i << endl;
-        cout << "Operation: ";
-        if (probability(PROB_ENTER)){
-            auto car = Car();
-            booth.push_back(car);
-            cout << "Joined Lane - "; car.print();
+        for (int l = 0; l < LANES; l++){
+            cout << "Lane " << l+1 << " - ";
+            auto booth = plaza[l];
+            if (probability(PROB_ENTER)){
+                auto car = Car();
+                booth.push_back(car);
+                cout << "Joined: "; car.print();
+            }
+            else if (booth.size() > 0){
+                auto car = booth.front();
+                booth.pop_front();
+                cout << "Payed: "; car.print();
+            }
         }
-        else{
-            auto car = booth.front();
-            booth.pop_front();
-            cout << "Car Payed - "; car.print();
-        }
-        cout << "Queue:\n";
-        print_cars(booth);
         cout << endl;
-    }
+    } */
 
     return 0;
 }
 
-void print_cars(array<deque<Car>, LANES> &plaza){
-    for (int l = 0; l < LANES; l++){
-        cout << "Lane " << l << ":\n";
-        auto booth = plaza[l];
-        
-        if (booth.size() == 0)
-            cout << "<Empty>";
-        for (auto car : booth)
-            car.print();
+void print_cars(deque<Car> &booth){
+    if (booth.size() == 0)
+        cout << "    <Empty>\n";
+    for (auto car : booth){
+        cout << "    ";
+        car.print();
     }
 }
 
-bool probability(int percent){
+int probability3(int perX, int perY, int perZ){
     int x = rand() % 100;
-    return x < percent;
+    int c = -1;
+    if (x < perX)
+        c = 0;
+    else if (x < perX+perY)
+        c = 1;
+    else if (x < perX+perY+perZ)
+        c = 2;
+    return c;
 }
