@@ -1,26 +1,29 @@
-// COMSC-210 | Lab 32 | Dan Pokhrel
+// COMSC-210 | Lab 33 | Dan Pokhrel
 #include "Car.h"
 #include <iostream>
 #include <deque>
 #include <random>
+#include <array>
 using namespace std;
 
 const int PROB_ENTER = 45;
 const int START_CARS = 2;
+const int LANES = 4, ITER = 20;
 
 // Prototypes
 bool probability(int percent);
-void print_cars(deque<Car> &booth);
+void print_cars(array<deque<Car>, LANES> &plaza);
 
 int main(){
     srand(time(0));
-    deque<Car> booth;
+    array<deque<Car>, LANES> plaza;
 
-    // Initialize tool booth
+    // Initialize tool booths
+    for (int l = 0; l < LANES; l++)
     for (int i = 0; i < START_CARS; i++)
-        booth.push_back(Car());
+        plaza[i].push_back(Car());
     cout << "Initial Queue:\n";
-    print_cars(booth);
+    print_cars(plaza);
     cout << endl;
 
     // Simulate
@@ -47,11 +50,16 @@ int main(){
     return 0;
 }
 
-void print_cars(deque<Car> &booth){
-    if (booth.size() == 0)
-        cout << "<Empty>";
-    for (auto car : booth)
-        car.print();
+void print_cars(array<deque<Car>, LANES> &plaza){
+    for (int l = 0; l < LANES; l++){
+        cout << "Lane " << l << ":\n";
+        auto booth = plaza[l];
+        
+        if (booth.size() == 0)
+            cout << "<Empty>";
+        for (auto car : booth)
+            car.print();
+    }
 }
 
 bool probability(int percent){
