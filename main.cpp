@@ -11,7 +11,7 @@ const int START_CARS = 2;
 const int LANES = 4, ITER = 20;
 
 // Prototypes
-int probability3(int perX, int perY, int perZ);
+int probability3(int perX, int perY, int perZ); // returns int between 0-2
 void print_cars(deque<Car> &booth);
 
 int main(){
@@ -19,7 +19,7 @@ int main(){
     deque<Car> plaza[LANES];
 
     // Initialize tool booths
-    for (int l = 0; l < LANES; l++)
+    for (int l = 0; l < LANES-1; l++)
     for (int i = 0; i < START_CARS; i++)
         plaza[l].push_back(Car());
 
@@ -31,14 +31,20 @@ int main(){
     cout << endl;
 
     // Simulate
-    for (int i = 0; i < ITER; i++){
+    for (int i = 0; i < ITER; i++){ // Loop through simulation
         cout << "Time: " << i << endl;
-        for (int l = 0; l < LANES; l++){
+        for (int l = 0; l < LANES; l++){ // Loop through lanes
             cout << "Lane " << l+1 << " - ";
-            auto booth = plaza[l];
+            deque<Car> &booth = plaza[l];
 
             int c = probability3(PROB_ENTER, PROB_LEAVE, PROB_SHIFT);
-            Car car;
+            if (booth.size() == 0){ // empty booth
+                c = -1;
+                // 50-50 chance for new car
+                if (rand() % 2 == 0)
+                    c = 0;
+            }
+            Car car; int newLane;
             switch (c)
             {
             case 0: // Enter lane
@@ -52,11 +58,19 @@ int main(){
                 cout << "Payed: "; car.print();
                 break;
             case 2: // Switch lanes
+                // Remove from starting lane
                 car = booth.back();
                 booth.pop_back();
-                int newLane = rand() % LANES;
+                // Find lane to switch to
+                newLane = l;
+                while (newLane == l) // keep generating random lanes until a new one is generated
+                    newLane = rand() % LANES;
+                // Add to new lane
                 plaza[newLane].push_back(car);
                 cout << "Switched to lane " << newLane+1 << ": "; car.print();
+                break;
+            default:
+                cout << "No Action\n";
                 break;
             }
         }
