@@ -19,7 +19,7 @@ int main(){
     deque<Car> plaza[LANES];
 
     // Initialize tool booths
-    for (int l = 0; l < LANES-1; l++)
+    for (int l = 0; l < LANES; l++)
     for (int i = 0; i < START_CARS; i++)
         plaza[l].push_back(Car());
 
